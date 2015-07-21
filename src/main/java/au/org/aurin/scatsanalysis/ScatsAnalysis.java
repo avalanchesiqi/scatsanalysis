@@ -94,17 +94,23 @@ public class ScatsAnalysis {
    */
   protected static String[] parseRecord(String line) {
 	  String[] records = new String[96];
-	  String[] parsedFields = (line + ",\"END\"").replaceAll("\"", "").split(",");
+	  String[] parsedFields = line.replaceAll("\"", "").split(",");
 	  String siteNo = parsedFields[0];
 	  String date = parsedFields[1].split("\\s+")[0];
+	  int len = parsedFields.length;
 	  for (int i=0; i<24; i++) {
 		  for (int j=0; j<4; j++) {
-			  String vehicleCount = parsedFields[i*4+j+3];
-			  if (vehicleCount.equals("") || vehicleCount.charAt(0) == '-') {
-				  vehicleCount = "0";
-			  }
-			  records[i*4+j] = siteNo + "-" + date + "-" + Integer.toString(i)
-			      + "-" + Integer.toString(j+1) + " " + vehicleCount;
+		    if (i*4+j+3 >= len) {
+		      records[i*4+j] = siteNo + "-" + date + "-" + Integer.toString(i)
+	            + "-" + Integer.toString(j+1) + " 0";
+		    } else {
+		      String vehicleCount = parsedFields[i*4+j+3];
+	        if (vehicleCount.equals("") || vehicleCount.charAt(0) == '-') {
+	          vehicleCount = "0";
+	        }
+	        records[i*4+j] = siteNo + "-" + date + "-" + Integer.toString(i)
+	            + "-" + Integer.toString(j+1) + " " + vehicleCount;
+		    }
 		  }
 	  }
 	  return records;
