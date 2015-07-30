@@ -24,9 +24,9 @@ import org.joda.time.DateTimeZone;
 import scala.Tuple2;
 
 /**
- * Class used as an helper for RDD composed of Scats
- * 
  * @author Siqi Wu
+ * 
+ * Class used as an helper for RDD composed of Scats
  */
 public class JavaRDDScats {
 
@@ -48,12 +48,9 @@ public class JavaRDDScats {
    */
   public static long saveToGeoMesaTable(JavaPairRDD<String, Integer> rddIn,
       ScatsAnalysisOptions options) throws IOException,SchemaException {
-    
-	  	
-	  JavaRDD<Tuple2<String, Integer>> rddIn2 = rddIn.rdd().toJavaRDD();
-	
+    	
 	  // The following closure is executed once per partition
-	  JavaRDD<Integer> countFeatures = rddIn2
+	  JavaRDD<Integer> countFeatures = rddIn
 	      .mapPartitions((Iterator<Tuple2<String, Integer>> iter) -> {
 	        
 	        // Builds a feature collection
@@ -61,7 +58,7 @@ public class JavaRDDScats {
 	        AccumuloFeatureStore featureSource = ScatsFeatureStore
 	            .getFeatureType(options);
 	        Integer nFeatures = 0;
-			
+	        
 	        // Adds all the features in the partition to the feature collection
 	        while (iter.hasNext()) {
 	          Tuple2<String, Integer> pair = iter.next();

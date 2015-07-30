@@ -17,11 +17,13 @@ import scala.Tuple2;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * Class used to aggregate Scats data by intersection number and timestamp
- * 
  * @author Siqi Wu
+ * 
+ * Class used to aggregate VicRoads Scats data by intersection number and timestamp
  */
 public class ScatsAnalysis {
+  
+  //CLI options
   private static ScatsAnalysisOptions options;
 
   /**
@@ -37,8 +39,9 @@ public class ScatsAnalysis {
    * @throws CmdLineException
    */
   public static void main(String[] args)
-      throws IOException, SchemaException, ParseException, NoSuchFieldException,
-      SecurityException, IllegalArgumentException, IllegalAccessException, CmdLineException {
+      throws IOException, SchemaException, ParseException,
+      NoSuchFieldException, SecurityException, IllegalArgumentException,
+      IllegalAccessException, CmdLineException {
     
     ScatsAnalysis.options = new ScatsAnalysisOptions();
     ScatsAnalysis.options.parse(args);
@@ -47,8 +50,9 @@ public class ScatsAnalysis {
     final JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
 
     // Reads the file of sensor readings
+    // Manually set the partition to reduce executer pressure when write to database
     JavaRDD<String> input = sparkContext
-        .textFile(ScatsAnalysis.options.readingsFile);
+        .textFile(ScatsAnalysis.options.readingsFile, 10000);
 
     // Transform input lines into record strings
     // Format:
@@ -65,29 +69,29 @@ public class ScatsAnalysis {
     // "100-2009-06-26-0-4": 21
     // ...
     JavaPairRDD<String, Integer> recordPairs = records.mapToPair((String s) -> {
-      return new Tuple2<String, Integer>(s.split("\\s+")[0], Integer.parseInt(s.split("\\s+")[1]));
+      return new Tuple2<String, Integer>(s.split("\\s+")[0],
+          Integer.parseInt(s.split("\\s+")[1]));
     });
     
-    JavaPairRDD<String, Integer> aggregate = recordPairs.reduceByKey((Integer a, Integer b) -> {
-      return a + b;
-    });
-        
+    JavaPairRDD<String, Integer> aggregate = recordPairs.reduceByKey(
+        (Integer a, Integer b) -> {
+          return a + b; 
+        });
+    
+    // Saves aggregate Scats to HDFS file
+//    JavaRDDScats.savePairRDDAsHDFS(aggregate, "hdfs://localhost:9000/scats/output");
+    
     // Ensures the Accumulo Feature Type is created
     ScatsFeatureStore.createFeatureType(ScatsAnalysis.options);
-    // Saves clean Scats to Accumulo
+    // Saves aggregate Scats to Accumulo
     System.out.println("**** n. features written: "
-        + JavaRDDScats.saveToGeoMesaTable(aggregate,
-        		ScatsAnalysis.options));
-    // Saves clean Scats to HDFS file
-    aggregate.saveAsTextFile("hdfs://localhost:9000/output");
-//    JavaRDDScats.savePairRDDAsHDFS(aggregate, "hdfs://localhost:9000/scats/output");
+        + JavaRDDScats.saveToGeoMesaTable(aggregate, ScatsAnalysis.options));
 
-    // Closes the context
     sparkContext.close();
   }
   
   /**
-   * Parse SCATS text and returns site-timestamp-vc information
+   * Parse SCATS text and returns siteNo-timestamp-vehicleCount information
    * 
    * @param record
    *          Record to process

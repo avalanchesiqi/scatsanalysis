@@ -5,7 +5,7 @@
 
   <groupId>au.org.aurin</groupId>
   <artifactId>scatsanalysis</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <name>scatsanalysis</name>
 
   <properties>
@@ -15,7 +15,7 @@
     <hadoop.version>2.7.1</hadoop.version>
     <spark.version>1.4.0</spark.version>
     <geomesa.version>1.0.0-rc.7</geomesa.version>
-    <gt.version>11.2</gt.version>
+    <gt.version>13.2</gt.version>
     <hsqldb.version>2.3.0</hsqldb.version>
     <tweetcommons.version>0.2.1-SNAPSHOT</tweetcommons.version>
     <encoding>UTF-8</encoding>
@@ -33,11 +33,6 @@
   </repositories>
 
   <dependencies>
-    <dependency>
-      <groupId>com.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>3.3</version>
-    </dependency>
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>

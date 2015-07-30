@@ -11,13 +11,14 @@ import org.locationtech.geomesa.core.data.AccumuloFeatureStore;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
- * Class implementing GeoMesa feature store to hold Scats records
- * 
  * @author Siqi Wu
+ * 
+ * Class implementing GeoMesa feature store to hold Scats records
  */
 public class ScatsFeatureStore {
 
-  protected static String schemaDef = "timestamp:Date, siteNo:String, location:Point:srid=4326, vehicleCount:int";
+  protected static String schemaDef = "timestamp:Date, siteNo:String, "
+      + "location:Point:srid=4326, vehicleCount:int";
 
   public ScatsFeatureStore() {
     // TODO Auto-generated constructor stub
@@ -30,7 +31,6 @@ public class ScatsFeatureStore {
    *          Accumulo table name for the schema
    * @throws SchemaException
    */
-
   public static SimpleFeatureType createSchema(String simpleFeatureTypeName)
       throws SchemaException {
     
