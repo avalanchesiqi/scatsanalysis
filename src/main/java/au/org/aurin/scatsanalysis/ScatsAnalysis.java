@@ -52,7 +52,7 @@ public class ScatsAnalysis {
     // Reads the file of sensor readings
     // Manually set the partition to reduce executer pressure when write to database
     JavaRDD<String> input = sparkContext
-        .textFile(ScatsAnalysis.options.readingsFile, 10000);
+        .textFile(ScatsAnalysis.options.readingsFile, ScatsAnalysis.options.partitionNumber);
 
     // Transform input lines into record strings
     // Format:

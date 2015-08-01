@@ -10,3 +10,4 @@ ${SPARK_HOME}/bin/spark-submit  \
   --tableName tweet \
   --overwrite \
   --readingsFile "hdfs://localhost:9000/VolumeDataSample.CSV" \
+  --partitionNumber 10

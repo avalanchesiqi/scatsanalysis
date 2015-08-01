@@ -16,5 +16,9 @@ public class ScatsAnalysisOptions extends GeoMesaOptions {
   @Option(name = "--readingsFile", required = true, usage = "the HDFS file "
       + "holding the SCATS data to process")
   public String readingsFile;
+  
+  @Option(name = "--partitionNumber", required = true, usage = "the partition "
+      + "number spilting raw SCATS data")
+  public int partitionNumber;
 
 }
