@@ -1,47 +1,38 @@
-# ScatsAnalysis
+ScatsAnalysis
+=============
 Software used to ingest SCATS traffic volume data into Accumulo/GeoMesa.
 
-## Installation steps
+About
+-----
+ScatsAnalysis is service that ingests SCATS traffic volume, aggregates vehicle_count and loads result into Accumulo database or stores in HDFS.
+Intuitively it is built to process Australian SCATS traffic volume, data I/O may be different according to different input format and requires specific preprocessing.
+
+Data Architecture
+-----------------
+An big data architecture called "STACK" is implemented here. It uses Apache Hadoop as file systems, Apache Spark as computation engine. On the top of that, NoSQL database Accumulo is set up with plugin GeoMesa to optimise geo-spatial data indexing. This architecture could be set up in standalone or cluster mode.
+
+A more detailed slides about ScatsAnalysis and STACK architecture could be found here:
+[An Architecture for Big Data Processing and Visualisation of Traffic Data](https://goo.gl/XITC0H)
+
+Build
+-----
+```mvn clean install -DskipTests=true```
+
+Usage
+-----
+1. Set up STACK architecture, create an Accumulo instance "tweeter", user "tweeter", table "tweet", assign WRITE and READ permission to user "tweeter" on table "tweet"
+
+2. Load Sample data into HDFS
+   ```${HADOOP_HOME}/bin/hadoop fs -put ./data/VolumeDataSample.CSV / ```
+
+3. Modify run script according to your system setting
+   - Change Spark master address to your hostname
+   - Change partition number to large number if process large file (e.g. 1000 for 20GB dataset)
+   - Allocate more executer memory and driver memory if needed
 
 
-### Build the environment on your local machine
-
-See this Wiki page to install Hadoop, Spark, and Accumulo/GeoMesa:
-http://wiki.aurin.org.au/display/TWIT/Analytical+stack+installation+procedure
-
-Start HDFS, Spark, Zookeeper and Accumulo.
-
-
-### Load test data into HDFS
-  `${HADOOP_HOME}/bin/hadoop fs -put ./data/vs15min_2012-05-17.csv /`
-
-
-### Load Adelaide intersection coordinates data into HDFS
-  `${HADOOP_HOME}/bin/hadoop fs -put ./data/dictionary.csv /`
-
-
-### Build the project
-
-  `mvn clean install`
-
-
-### Run the project
-
-  `${SPARK_HOME}/bin/spark-submit  \`
-  `  --name "ScatsAnalysis" \`
-  `  --class au.org.aurin.ScatsAnalysis \`
-  `  --master "spark://vaneyck:7077" \`
-  `  --deploy-mode client \`
-  `  ./target/scats-<version>.jar \`
-  `  --instanceId atraffic \`
-  `  --zookeepers "localhost:2181" \`
-  `  --user root --password atraffic \`
-  `  --tableName atraffic \`
-  `  --overwrite \`
-  `  --readingsFile "hdfs://localhost:9000/sample.csv" \`
-
-### Look at the results
-
-  `${ACCUMULO_HOME}/bin/accumulo shell -u root`
-  `scan -table atraffic_records`
+Look at the results
+-------------------
+```${ACCUMULO_HOME}/bin/accumulo shell -u root```
+```scan -table tweet_records```
 
