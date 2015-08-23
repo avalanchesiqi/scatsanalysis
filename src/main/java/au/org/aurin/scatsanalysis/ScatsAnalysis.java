@@ -80,12 +80,12 @@ public class ScatsAnalysis {
     
     // Saves aggregate Scats to HDFS file
 //    JavaRDDScats.savePairRDDAsHDFS(aggregate, "hdfs://localhost:9000/scats/output");
-    
+    aggregate.saveAsTextFile("hdfs://localhost:9000/scats/output");
     // Ensures the Accumulo Feature Type is created
-    ScatsFeatureStore.createFeatureType(ScatsAnalysis.options);
+//    ScatsFeatureStore.createFeatureType(ScatsAnalysis.options);
     // Saves aggregate Scats to Accumulo
-    System.out.println("**** n. features written: "
-        + JavaRDDScats.saveToGeoMesaTable(aggregate, ScatsAnalysis.options));
+//    System.out.println("**** n. features written: "
+//        + JavaRDDScats.saveToGeoMesaTable(aggregate, ScatsAnalysis.options));
 
     sparkContext.close();
   }

@@ -20,5 +20,9 @@ public class ScatsAnalysisOptions extends GeoMesaOptions {
   @Option(name = "--partitionNumber", required = true, usage = "the partition "
       + "number spilting raw SCATS data")
   public int partitionNumber;
+  
+  @Option(name = "--dictionaryFile", required = false, usage = "the HDFS file "
+      + "holding the intersection coordinates data")
+  public String dictionaryFile;
 
 }
